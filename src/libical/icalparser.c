@@ -148,7 +148,7 @@ static char *parser_get_next_char(char c, char *str, int qm)
     char prev_char = 0;
 
     while (next_char != 0) {
-        if (prev_char != '\\') {
+        if (prev_char && prev_char != '\\') {
             if (qm == 1 && next_char == '"') {
                 /* Encountered a quote, toggle quote mode */
                 quote_mode = !quote_mode;
@@ -711,12 +711,6 @@ icalcomponent *icalparser_add_line(icalparser *parser, char *line)
         str = parser_get_next_value(end, &end, value_kind);
 
         comp_kind = icalenum_string_to_component_kind(str);
-
-        if (comp_kind == ICAL_NO_COMPONENT) {
-            c = icalcomponent_new(ICAL_XLICINVALID_COMPONENT);
-            insert_error(c, str, "Parse error in component name",
-                         ICAL_XLICERRORTYPE_COMPONENTPARSEERROR);
-        }
 
         c = icalcomponent_new(comp_kind);
 
